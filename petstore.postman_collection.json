@@ -1,0 +1,249 @@
+{
+	"info": {
+		"_postman_id": "5d3f9e64-844e-4333-a28a-419a9f5d1786",
+		"name": "petstore",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3865843",
+		"_collection_link": "https://jvlabarrete.postman.co/workspace/EXPLORING~fd579195-e8fd-440d-b1af-fa30bf0ac854/collection/3865843-5d3f9e64-844e-4333-a28a-419a9f5d1786?action=share&source=collection_link&creator=3865843"
+	},
+	"item": [
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "POST: /user",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"window = {};",
+									"pm.sendRequest(\"https://cdnjs.cloudflare.com/ajax/libs/Faker/3.1.0/faker.min.js\", (error, response) => {",
+									"var text = response.text();",
+									"(new Function(text))();",
+									"",
+									"window.faker.locale = \"en\";",
+									"",
+									"var fakerusername = window.faker.internet.userName();",
+									"var firstname = window.faker.lorem.word();",
+									"var lastname = window.faker.lorem.word();",
+									"",
+									"console.log(fakerusername);",
+									"console.log(firstname);",
+									"console.log(lastname);",
+									"",
+									"",
+									"pm.environment.set('username', fakerusername);",
+									"pm.environment.set('firstname', firstname)",
+									"pm.environment.set('lastname',lastname)",
+									"",
+									"",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": 0,\n  \"username\": \"{{username}}\",\n  \"firstName\": \"{{firstname}}\",\n  \"lastName\": \"{{lastname}}\",\n  \"email\": \"imogegraham+test1@gmail.com\",\n  \"password\": \"Test123\",\n  \"phone\": \"0478345123\",\n  \"userStatus\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/user",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET:/user/{username}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/user/{{username}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user",
+								"{{username}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET: /user/login",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/user/login?username={{username}}&password={{password}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user",
+								"login"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "{{username}}"
+								},
+								{
+									"key": "password",
+									"value": "{{password}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "order",
+			"item": [
+				{
+					"name": "GET: store/inventory",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://petstore.swagger.io/v2/store/inventory",
+							"protocol": "https",
+							"host": [
+								"petstore",
+								"swagger",
+								"io"
+							],
+							"path": [
+								"v2",
+								"store",
+								"inventory"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST: /pet",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"window = {};",
+									"pm.sendRequest(\"https://cdnjs.cloudflare.com/ajax/libs/Faker/3.1.0/faker.min.js\", (error, response) => {",
+									"var text = response.text();",
+									"(new Function(text))();",
+									"",
+									"window.faker.locale = \"en\";",
+									"var petid = window.faker.random.number()",
+									"var petName = window.faker.lorem.word();",
+									"var tagName = \"tag_\" + window.faker.lorem.word();",
+									"",
+									"console.log(`petName:${petName}`);",
+									"console.log(`tagName:${tagName}`)",
+									"console.log(petid)",
+									"",
+									"pm.environment.set('petName', petName)",
+									"pm.environment.set('tagName',tagName)",
+									"pm.environment.set('petid',petid)",
+									"",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json()",
+									"",
+									"let petid = responseJson.id",
+									"",
+									"pm.environment.set('petid',petid)",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": {{petid}},\n  \"category\": {\n    \"id\": 0,\n    \"name\": \"string\"\n  },\n  \"name\": \"{{petName}}\",\n  \"photoUrls\": [\n    \"string\"\n  ],\n  \"tags\": [\n    {\n      \"id\": 0,\n      \"name\": \"{{tagName}}\"\n    }\n  ],\n  \"status\": \"available\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/pet",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"pet"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET/pet/{petid}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/pet/{{petid}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"pet",
+								"{{petid}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
